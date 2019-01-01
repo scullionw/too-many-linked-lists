@@ -23,7 +23,7 @@ impl<T> LinkedList<T> {
         LinkedList { head: None, len: 0 }
     }
     fn is_empty(&self) -> bool {
-        return self.len == 0;
+        self.len == 0
     }
 
     fn insert_front(&mut self, val: T) {

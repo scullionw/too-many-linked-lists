@@ -1,6 +1,6 @@
 fn main() {
     let mut stack = LinkedList::new();
-    (0..100).for_each(|val| stack.insert_front(val));
+    (0..=10).for_each(|val| stack.insert_front(val));
     while let Some(val) = stack.remove_front() {
         println!("Value popped: {:?}", val);
     }
@@ -30,32 +30,17 @@ impl<T> LinkedList<T> {
     }
 
     pub fn insert_front(&mut self, val: T) {
-        match self.head {
-            Some(_) => {
-                let new_head = Node {
-                    data: val,
-                    next: self.head.take(),
-                };
-                self.head = Some(Box::new(new_head));
-            }
-            None => {
-                let new_head = Node {
-                    data: val,
-                    next: None,
-                };
-                self.head = Some(Box::new(new_head));
-            }
-        }
+        let new_head = Node {
+            data: val,
+            next: self.head.take(),
+        };
+        self.head = Some(Box::new(new_head));
         self.len += 1;
     }
 
     pub fn remove_front(&mut self) -> Option<T> {
-        match self.head {
-            Some(_) => {
-                let removed_head = self
-                    .head
-                    .take()
-                    .expect("Not empty so head should not be None.");
+        match self.head.take() {
+            Some(removed_head) => {
                 self.head = removed_head.next;
                 self.len -= 1;
                 Some(removed_head.data)

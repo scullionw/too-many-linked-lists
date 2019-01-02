@@ -1,7 +1,7 @@
 fn main() {
     let mut stack = LinkedList::new();
     (0..=10).for_each(|val| stack.insert_front(val));
-    
+
     for x in stack.iter() {
         println!("{}", x);
     }
@@ -57,14 +57,12 @@ impl<T> LinkedList<T> {
     }
 
     pub fn iter(&self) -> ListIterable<'_, T> {
-        ListIterable {
-            curr: &self.head
-        }
+        ListIterable { curr: &self.head }
     }
 }
 
 pub struct ListIterable<'a, T> {
-    curr: &'a Option<Box<Node<T>>>
+    curr: &'a Option<Box<Node<T>>>,
 }
 
 impl<'a, T> Iterator for ListIterable<'a, T> {
@@ -75,8 +73,8 @@ impl<'a, T> Iterator for ListIterable<'a, T> {
             Some(node) => {
                 self.curr = &node.next;
                 Some(&node.data)
-            },
-            None => None
+            }
+            None => None,
         }
     }
 }

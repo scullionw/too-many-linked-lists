@@ -18,13 +18,29 @@ struct Node<T> {
     next: Option<Box<Node<T>>>,
 }
 
+impl<T> Node<T> {
+    fn next_as_ref(&self) -> Option<&Node<T>> {
+        match &self.next {
+            Some(node) => Some(&(*node)),
+            None => None,
+        }
+    }
+
+    fn next_as_ref_mut(&mut self) -> Option<&mut Node<T>> {
+        match &mut self.next {
+            Some(node) => Some(&mut (*node)),
+            None => None,
+        }
+    }
+}
+
 pub struct LinkedList<T> {
     head: Option<Box<Node<T>>>,
     len: usize,
 }
 
 impl<T> LinkedList<T> {
-    pub fn new() -> LinkedList<T> {
+    pub fn new() -> Self {
         LinkedList { head: None, len: 0 }
     }
 
@@ -56,13 +72,49 @@ impl<T> LinkedList<T> {
         }
     }
 
-    pub fn iter(&self) -> ListIterable<'_, T> {
-        ListIterable { curr: &self.head }
+    fn peek(&self) -> Option<&T> {
+        match self.head.as_ref() {
+            Some(head) => Some(&head.data),
+            None => None,
+        }
+    }
+
+    fn peek_mut(&mut self) -> Option<&mut T> {
+        match self.head.as_mut() {
+            Some(head) => Some(&mut head.data),
+            None => None,
+        }
+    }
+
+    fn head_as_ref(&self) -> Option<&Node<T>> {
+        match &self.head {
+            Some(node) => Some(&(*node)),
+            None => None,
+        }
+    }
+
+    fn head_as_ref_mut(&mut self) -> Option<&mut Node<T>> {
+        match &mut self.head {
+            Some(node) => Some(&mut (*node)),
+            None => None,
+        }
+    }
+
+    pub fn iter(&self) -> ListIterable<T> {
+        ListIterable {
+            curr: self.head_as_ref(),
+        }
+    }
+
+    pub fn iter_mut(&mut self) -> ListIterableMut<T> {
+        ListIterableMut {
+            curr: self.head_as_ref_mut(),
+        }
     }
 }
 
 pub struct ListIterable<'a, T> {
-    curr: &'a Option<Box<Node<T>>>,
+    curr: Option<&'a Node<T>>,
 }
 
 impl<'a, T> Iterator for ListIterable<'a, T> {
@@ -71,11 +123,26 @@ impl<'a, T> Iterator for ListIterable<'a, T> {
     fn next(&mut self) -> Option<Self::Item> {
         match self.curr {
             Some(node) => {
-                self.curr = &node.next;
+                self.curr = node.next_as_ref();
                 Some(&node.data)
             }
             None => None,
         }
+    }
+}
+
+pub struct ListIterableMut<'a, T> {
+    curr: Option<&'a mut Node<T>>,
+}
+
+impl<'a, T> Iterator for ListIterableMut<'a, T> {
+    type Item = &'a mut T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.curr.take().map(|node| {
+            self.curr = node.next.as_mut().map(|node| &mut **node);
+            &mut node.data
+        })
     }
 }
 

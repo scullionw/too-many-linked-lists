@@ -63,6 +63,10 @@ mod tests {
         assert_eq!(stack.remove_front(), Some(2));
         assert_eq!(stack.remove_front(), Some(1));
         assert_eq!(stack.remove_front(), None);
+        stack.insert_front(3);
+        stack.insert_front(4);
+        assert_eq!(stack.remove_front(), Some(4));
+        assert_eq!(stack.remove_front(), Some(3));
         assert_eq!(stack.remove_front(), None);
     }
 }

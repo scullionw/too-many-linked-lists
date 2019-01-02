@@ -1,9 +1,16 @@
 fn main() {
     let mut stack = LinkedList::new();
     (0..=10).for_each(|val| stack.insert_front(val));
-    while let Some(val) = stack.remove_front() {
-        println!("Value popped: {:?}", val);
+    
+    for x in stack.iter() {
+        println!("{}", x);
     }
+
+    let sum: i32 = stack.iter().take(5).sum();
+    println!("Sum is: {}", sum);
+    // while let Some(val) = stack.remove_front() {
+    //     println!("Value popped: {:?}", val);
+    // }
 }
 
 struct Node<T> {
@@ -46,6 +53,30 @@ impl<T> LinkedList<T> {
                 Some(removed_head.data)
             }
             None => None,
+        }
+    }
+
+    pub fn iter(&self) -> ListIterable<'_, T> {
+        ListIterable {
+            curr: &self.head
+        }
+    }
+}
+
+pub struct ListIterable<'a, T> {
+    curr: &'a Option<Box<Node<T>>>
+}
+
+impl<'a, T> Iterator for ListIterable<'a, T> {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.curr {
+            Some(node) => {
+                self.curr = &node.next;
+                Some(&node.data)
+            },
+            None => None
         }
     }
 }

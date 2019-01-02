@@ -11,17 +11,25 @@ struct Node<T> {
     next: Option<Box<Node<T>>>,
 }
 
-struct LinkedList<T> {
+pub struct LinkedList<T> {
     head: Option<Box<Node<T>>>,
     len: usize,
 }
 
 impl<T> LinkedList<T> {
-    fn new() -> LinkedList<T> {
+    pub fn new() -> LinkedList<T> {
         LinkedList { head: None, len: 0 }
     }
 
-    fn insert_front(&mut self, val: T) {
+    pub fn len(&self) -> usize {
+        self.len
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len == 0
+    }
+
+    pub fn insert_front(&mut self, val: T) {
         match self.head {
             Some(_) => {
                 let new_head = Node {
@@ -41,7 +49,7 @@ impl<T> LinkedList<T> {
         self.len += 1;
     }
 
-    fn remove_front(&mut self) -> Option<T> {
+    pub fn remove_front(&mut self) -> Option<T> {
         match self.head {
             Some(_) => {
                 let removed_head = self
